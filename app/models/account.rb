@@ -79,7 +79,6 @@ class Account < Ekylibre::Record::Base
   validates :number, length: { allow_nil: true, maximum: 20 }
   validates :name, length: { allow_nil: true, maximum: 200 }
   validates :number, format: { with: /\A\d(\d(\d[0-9A-Z]*)?)?\z/ }
-  validates :number, uniqueness: true
 
   # default_scope order(:number, :name)
   scope :majors, -> { where("number LIKE '_'").order(:number, :name) }
