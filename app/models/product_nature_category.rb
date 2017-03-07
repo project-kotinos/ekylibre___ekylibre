@@ -114,6 +114,16 @@ class ProductNatureCategory < Ekylibre::Record::Base
     true
   end
 
+  after_save do
+    if self.storable
+      variants.each do |variant|
+        variant.stock_account_id = self.stock_account_id
+        variant.stock_movement_account_id = self.stock_movement_account_id
+        variant.save
+      end
+    end
+  end
+
   def to
     to = []
     to << :sales if saleable?
