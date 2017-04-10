@@ -1267,6 +1267,7 @@ arb:
     deformity: "تشويه"
     deformity_percentage: "تشوه (٪)"
     deformity_percentage_evolution: "تطور نسبة التشوه"
+    # delay: "Delay"
     delay_create: "اضافة مهلة جديدة" #?
     delay_update: "تعديل المهلة" #?
     delays: "التأخير" #?
@@ -1519,6 +1520,7 @@ arb:
     interventions: "التدخلات"
     interventions_count: "عد التدخلات"
     interventions_paths: "مسارات التدخلات"
+    # invalid_date: "Invalid date"
     invalid_file: "ملف غير صالح"
     invalid_format: "صيغة خاطئة"
     inventories: "المخزونات"

@@ -1047,6 +1047,7 @@ spa:
     deformity: "Deformidad"
     deformity_percentage: "Deformidad (%)"
     deformity_percentage_evolution: "Deformidad de la evolución porcentaje"
+    # delay: "Delay"
     delay_create: "Añadir un plazo" #?
     delay_update: "Modifiar el plazo" #?
     delete: "Borrar"
@@ -1260,6 +1261,7 @@ spa:
     interventions: "Intervenciones"
     interventions_count: "Intervenciones cuentan"
     interventions_paths: "Intervenciones caminos"
+    # invalid_date: "Invalid date"
     invalid_file: "Archivo inválido"
     invalid_format: "Formato inválido"
     inventories: "Los inventarios"

@@ -58,5 +58,26 @@
         element.attr "autocomplete", "off"
       return
 
+    $(document).on "focusout", "input[type='date']", (event) ->
+      element = $(event.target)
+      checkDateAfter = element.attr('data-check-date-after')
+
+      if !checkDateAfter
+        return
+
+      inputValue = $(element).val()
+      inputDate = new Date(inputValue)
+      limitDate = new Date(checkDateAfter)
+      submitButton = $(this).closest('form').find('input[type="submit"]')
+
+      if inputValue == '' || inputDate < limitDate
+        $(submitButton).attr('disabled', 'disabled')
+        $(element).after('<span class="help-inline">Nom ne peut pas être vide</span>')
+      else if $(submitButton).attr('disabled')
+        $(submitButton).removeAttr('disabled')
+        $(element).parent().find('.help-inline').remove()
+
+
   return
+
 ) jQuery
