@@ -147,9 +147,13 @@ class JournalEntryItem < Ekylibre::Record::Base
 
   validate(on: :update) do
     old = old_record
-    list = changed - %w[cumulated_absolute_debit cumulated_absolute_credit]
+    list = changed - %w[printed_on cumulated_absolute_debit cumulated_absolute_credit]
     if old.closed? && list.any?
-      errors.add(:account_id, :entry_has_been_already_validated)
+      list.each do |attribute|
+        if !entry.respond_to?(attribute) || (entry.send(attribute) != send(attribute))
+          errors.add(attribute, :entry_has_been_already_validated)
+        end
+      end
     end
     # Forbids to change "manually" the letter. Use Account#mark/unmark.
     # if old.letter != self.letter and not (old.balanced_letter? and self.balanced_letter?)
@@ -281,6 +285,10 @@ class JournalEntryItem < Ekylibre::Record::Base
       # self.cumulated_absolute_credit -= old.absolute_credit
       old.followings.update_all("cumulated_absolute_debit = cumulated_absolute_debit - #{old.absolute_debit}, cumulated_absolute_credit = cumulated_absolute_credit - #{old.absolute_debit}")
     end
+  end
+
+  def lettered?
+    letter.present?
   end
 
   # Unmark all the journal entry items with the same mark in the same account
