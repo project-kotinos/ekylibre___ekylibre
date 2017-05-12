@@ -602,6 +602,8 @@ class FinancialYear < Ekylibre::Record::Base
     return unless result.nonzero?
 
     account = Account.find(items.first[:account_id])
+    point_to = items.entry && items.entry.resource if letter
+
     new_letter = account.new_letter
     lettered_later = account.journal_entry_items.where('printed_on > ?', to_close_on).where(letter: letter)
     JournalEntryItem.where(id: lettered_later).update_all(letter: new_letter)
@@ -612,7 +614,8 @@ class FinancialYear < Ekylibre::Record::Base
                                        { number: '891', name: 'Bilan d’ouverture' },
                                        items,
                                        -result,
-                                       to_close_on + 1.day)
+                                       to_close_on + 1.day,
+                                       point_to: point_to)
 
     items = items.map do |item|
       swap = item[:real_debit]
@@ -629,11 +632,11 @@ class FinancialYear < Ekylibre::Record::Base
                                        to_close_on)
   end
 
-  def generate_closing_or_opening_entry!(journal, account_info, items, result, to_close_on)
+  def generate_closing_or_opening_entry!(journal, account_info, items, result, to_close_on, point_to: nil)
     return unless journal
     account = Account.find_or_create_by_number(account_info[:number], account_info[:name])
 
-    journal.entries.create!(
+    entry = journal.entries.create!(
       printed_on: to_close_on,
       currency: journal.currency,
       items_attributes: items + [{
@@ -642,5 +645,13 @@ class FinancialYear < Ekylibre::Record::Base
         (result > 0 ? :real_debit : :real_credit) => result.abs
       }]
     )
+
+    if point_to
+      entry.resource = point_to
+      entry.save!
+
+      point_to.journal_entry = entry
+      point_to.save!
+    end
   end
 end
