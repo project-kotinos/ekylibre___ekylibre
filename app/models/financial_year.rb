@@ -552,9 +552,14 @@ class FinancialYear < Ekylibre::Record::Base
       generate_lettering_carry_forward!(a, opening_journal, closure_journal, to_close_on)
     end
 
-    result = unlettered_items.map { |i| i[:real_debit] - i[:real_credit] }.sum
+    debit_result = unlettered_items.map { |i| i[:real_debit] }.sum
+    credit_result = unlettered_items.map { |i| i[:real_credit] }.sum
 
-    generate_closing_and_opening_entry!(unlettered_items, result, to_close_on, opening_journal, closure_journal)
+    debit_items = unlettered_items.select { |i| i[:real_debit].nonzero? }
+    credit_items = unlettered_items.select { |i| i[:real_credit].nonzero? }
+
+    generate_closing_and_opening_entry!(debit_items, debit_result, to_close_on, opening_journal, closure_journal)
+    generate_closing_and_opening_entry!(credit_items, -credit_result, to_close_on, opening_journal, closure_journal)
   end
 
   def unbalanced_items_for(account, to_close_on, include_nil: false)
