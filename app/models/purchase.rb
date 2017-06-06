@@ -235,6 +235,10 @@ class Purchase < Ekylibre::Record::Base
     "#{name}Affair".constantize
   end
 
+  def self.nature_class
+    "#{name}Nature".constantize
+  end
+
   def third
     send(third_attribute)
   end

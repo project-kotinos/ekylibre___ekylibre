@@ -275,6 +275,10 @@ class Sale < Ekylibre::Record::Base
     "#{name}Affair".constantize
   end
 
+  def self.nature_class
+    "#{name}Nature".constantize
+  end
+
   def default_currency
     currency || nature.currency
   end
