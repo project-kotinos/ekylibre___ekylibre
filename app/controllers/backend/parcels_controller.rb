@@ -212,7 +212,7 @@ module Backend
 
       senders = parcels.pluck(:sender_id)
       recipients = parcels.pluck(:recipient_id)
-      thirds = (senders + recipients).uniq
+      thirds = (senders + recipients).uniq.compact
 
       invoiceable = parcels.all?(&:invoiceable?)
 
