@@ -209,17 +209,21 @@ module Backend
     def invoice
       parcels = find_parcels
       return unless parcels
-      parcel = parcels.first
-      if parcels.all? { |p| p.incoming? && p.third_id == parcel.third_id && p.invoiceable? }
-        purchase = Parcel.convert_to_purchase(parcels)
-        redirect_to backend_purchase_path(purchase)
-      elsif parcels.all? { |p| p.outgoing? && p.third_id == parcel.third_id && p.invoiceable? }
-        sale = Parcel.convert_to_sale(parcels)
-        redirect_to backend_sale_path(sale)
-      else
+
+      senders = parcels.pluck(:sender_id)
+      recipients = parcels.pluck(:recipient_id)
+      thirds = (senders + recipients).uniq
+
+      invoiceable = parcels.all?(&:invoiceable?)
+
+      if (senders.any? && recipients.any?) || !invoiceable || thirds.many?
         notify_error(:all_parcels_must_be_invoiceable_and_of_same_nature_and_third)
-        redirect_to(params[:redirect] || { action: :index })
+        return redirect_to(params[:redirect] || { action: :index })
       end
+
+      trade_type = senders.any? ? :purchase : :sale
+      trade = Parcel.send(:"convert_to_#{trade_type}", parcels)
+      redirect_to send(:"backend_#{trade_type}_path", trade)
     end
 
     # Pre-fill delivery form with given parcels. Nothing else.
@@ -251,7 +255,7 @@ module Backend
 
     def find_parcels
       parcel_ids = params[:id].split(',')
-      parcels = parcel_ids.map { |id| Parcel.find_by(id: id) }.compact
+      parcels = Parcel.where(id: parcel_ids.compact)
       unless parcels.any?
         notify_error :no_parcels_given
         redirect_to(params[:redirect] || { action: :index })
