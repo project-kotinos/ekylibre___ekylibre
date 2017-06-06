@@ -426,113 +426,89 @@ class Parcel < Ekylibre::Record::Base
       parcels.map(&:transporter_id).compact
     end
 
-    # Convert parcels to one sale. Assume that all parcels are checked before.
-    # Sale is written in DB with default values
-    def convert_to_sale(parcels)
-      sale = nil
+    def convert_to_trade(parcels, trade_class, &unit_pretax_amount)
+      trade = nil
+
+      trade_type = trade_class.name.downcase.to_sym
+      trade_nature = trade_class.nature_class
+      journal = Journal.send(trade_type.to_s.pluralize.to_sym)
+
       transaction do
-        parcels = parcels.collect do |d|
-          (d.is_a?(self) ? d : find(d))
-        end.sort_by(&:first_available_date)
+        parcels = parcels.includes(:items).sort_by(&:first_available_date)
         third = detect_third(parcels)
         planned_at = parcels.last.first_available_date || Time.zone.now
-        unless nature = SaleNature.actives.first
-          unless journal = Journal.sales.opened_on(planned_at).first
-            raise 'No sale journal'
+
+        # Instantiate nature
+        unless nature = trade_nature.actives.first
+          unless journal = journal.opened_on(planned_at).first
+            raise "No #{trade_type} journal"
           end
-          nature = SaleNature.create!(
+          nature = trade_nature.create!(
             active: true,
             currency: Preference[:currency],
             with_accounting: true,
             journal: journal,
             by_default: true,
-            name: SaleNature.tc('default.name', default: SaleNature.model_name.human)
+            name: trade_nature.tc('default.name', default: trade_nature.model_name.human)
           )
         end
-        sale = Sale.create!(
-          client: third,
-          nature: nature,
-          # created_at: planned_at,
-          delivery_address: parcels.last.address
-        )
 
-        # Adds items
+        # Instantiate trade
+        trade_attributes = {
+          trade_class.third_attribute => third,
+          nature: nature,
+          delivery_address: parcels.last.address
+        }
+        trade_attributes[:planned_at] = planned_at if trade_type == :purchase
+        trade = trade_class.create!(trade_attributes)
+
+        # Instatiate trade items
+        able_predicate = :"#{trade_type}able?"
+        taxes_method = :"#{trade_type}_taxes"
+
         parcels.each do |parcel|
-          parcel.items.each do |item|
-            # raise "#{item.variant.name} cannot be sold" unless item.variant.saleable?
-            next unless item.variant.saleable? && item.population && item.population > 0
-            catalog_item = Catalog.by_default!(:sale).items.find_by(variant: item.variant)
-            item.sale_item = sale.items.create!(
+          parcel.items.order(:id).each do |item|
+            tradeable = item.variant.send(able_predicate)
+            present = item.population && item.population > 0
+            next unless tradeable && present
+
+            catalog_item = Catalog.by_default!(trade_type).items.find_by(variant: item.variant)
+            tax = item.variant.category.send(taxes_method).first || Tax.first
+            trade_item = trade.items.new(
               variant: item.variant,
-              unit_pretax_amount: (catalog_item ? catalog_item.amount : 0.0),
-              tax: item.variant.category.sale_taxes.first || Tax.first,
+              unit_pretax_amount: unit_pretax_amount.call(item, catalog_item),
+              tax: tax,
               quantity: item.population
             )
-            item.save!
+
+            item.send(:"#{trade_type}_item=", trade_item)
           end
-          parcel.reload
-          parcel.sale_id = sale.id
+
+          parcel.send(:"#{trade_type}_id=", trade.id)
+          trade.save!
           parcel.save!
         end
 
         # Refreshes affair
-        sale.save!
+        trade.save!
       end
-      sale
+      trade
+    end
+
+    # Convert parcels to one sale. Assume that all parcels are checked before.
+    # Sale is written in DB with default values
+    def convert_to_sale(parcels)
+      convert_to_trade(parcels, Sale) do |_, catalog_item|
+        catalog_item ? catalog_item.amount : 0.0
+      end
     end
 
     # Convert parcels to one purchase. Assume that all parcels are checked before.
     # Purchase is written in DB with default values
     def convert_to_purchase(parcels)
-      purchase = nil
-      transaction do
-        parcels = parcels.collect do |d|
-          (d.is_a?(self) ? d : find(d))
-        end.sort_by(&:first_available_date)
-        third = detect_third(parcels)
-        planned_at = parcels.last.first_available_date || Time.zone.now
-        unless nature = PurchaseNature.actives.first
-          unless journal = Journal.purchases.opened_on(planned_at).first
-            raise 'No purchase journal'
-          end
-          nature = PurchaseNature.create!(
-            active: true,
-            currency: Preference[:currency],
-            with_accounting: true,
-            journal: journal,
-            by_default: true,
-            name: PurchaseNature.tc('default.name', default: PurchaseNature.model_name.human)
-          )
-        end
-        purchase = Purchase.create!(
-          supplier: third,
-          nature: nature,
-          planned_at: planned_at,
-          delivery_address: parcels.last.address
-        )
-
-        # Adds items
-        parcels.each do |parcel|
-          parcel.items.each do |item|
-            next unless item.variant.purchasable? && item.population && item.population > 0
-            catalog_item = Catalog.by_default!(:purchase).items.find_by(variant: item.variant)
-            item.purchase_item = purchase.items.create!(
-              variant: item.variant,
-              unit_pretax_amount: (item.unit_pretax_amount.nil? || item.unit_pretax_amount.zero? ? (catalog_item ? catalog_item.amount : 0.0) : item.unit_pretax_amount),
-              tax: item.variant.category.purchase_taxes.first || Tax.first,
-              quantity: item.population
-            )
-            item.save!
-          end
-          parcel.reload
-          parcel.purchase = purchase
-          parcel.save!
-        end
-
-        # Refreshes affair
-        purchase.save!
+      convert_to_trade(parcels, Purchase) do |item|
+        item.unit_pretax_amount.nil? || item.unit_pretax_amount.zero? ? (catalog_item ? catalog_item.amount : 0.0) : item.unit_pretax_amount
       end
-      purchase
     end
 
     def detect_third(parcels)
