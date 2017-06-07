@@ -377,6 +377,8 @@ class Parcel < Ekylibre::Record::Base
   end
 
   def first_available_date
+    # Used to order.
+    # TODO: Replace with a scope using SQL's COALESCE
     given_at || planned_at || prepared_at || in_preparation_at || ordered_at
   end
 
@@ -484,8 +486,7 @@ class Parcel < Ekylibre::Record::Base
             item.send(:"#{trade_type}_item=", trade_item)
           end
 
-          parcel.send(:"#{trade_type}_id=", trade.id)
-          trade.save!
+          parcel.send(:"#{trade_type}=", trade)
           parcel.save!
         end
 
