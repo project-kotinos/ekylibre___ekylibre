@@ -1,6 +1,8 @@
 module ToolbarHelper
   # This class permit to register the composition of a toolbar
   class Toolbar
+    class MainToolbarIDNotFound < RuntimeError; end
+
     def initialize(template)
       @template = template
     end
@@ -150,6 +152,14 @@ module ToolbarHelper
     end
     if options[:name] == :main
       html << Ekylibre::View::Addon.render(:main_toolbar, self, t: toolbar)
+      view_path = block.source_location.first
+      relevant_path_regexp = Regexp.new(Regexp.escape("#{Rails.root}/app/views/")+"(.*)"+"\.html\.haml")
+      match = view_path.match(relevant_path_regexp)
+      unless match
+        raise MainToolbarIDNotFound, "Couldn't extract main_toolbar_id from #{view_path}"
+      end
+      identifier = match.captures.first.gsub('/', '_')
+      html << Ekylibre::View::Addon.render(:"#{identifier}_main_toolbar", self, t: toolbar)
     end
 
     unless options[:wrap].is_a?(FalseClass)
