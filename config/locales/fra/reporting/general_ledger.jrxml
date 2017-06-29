@@ -3,11 +3,11 @@
 	<property name="ireport.zoom" value="1.4641000000000015"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<template><![CDATA["/home/djoulin/projects/ekylibre/config/corporate_identity/reporting_style.jrtx"]]></template>
-	<style name="Title" fontName="Open Sans" fontSize="30" isBold="true" pdfFontName="Open Sans"/>
-	<style name="SubTitle" forecolor="#736343" fontName="Open Sans" fontSize="18"/>
-	<style name="Column header" forecolor="#666666" fontName="Open Sans" fontSize="12" isBold="true"/>
-	<style name="Detail" fontName="Open Sans" fontSize="12">
+    <template><![CDATA["../../../corporate_identity/reporting_style.xml"]]></template>
+	<style name="Title" fontName="SansSerif" fontSize="30" isBold="true"/>
+	<style name="SubTitle" forecolor="#736343" fontName="SansSerif" fontSize="18"/>
+	<style name="Column header" forecolor="#666666" fontName="SansSerif" fontSize="12" isBold="true"/>
+	<style name="Detail" fontName="SansSerif" fontSize="12">
 		<conditionalStyle>
 			<conditionExpression><![CDATA[$F{state} == "draft"]]></conditionExpression>
 			<style mode="Transparent" forecolor="#808080" fill="Solid" vAlign="Top" isBold="false" isItalic="true" isUnderline="false"/>
@@ -85,6 +85,12 @@
 	<variable name="debit_1" class="java.lang.Double" resetType="Group" resetGroup="account" calculation="Sum">
 		<variableExpression><![CDATA[$F{debit}]]></variableExpression>
 	</variable>
+	<variable name="entry_number_1" class="java.lang.Integer" resetType="Group" resetGroup="account" calculation="Count">
+		<variableExpression><![CDATA[$F{entry_number}]]></variableExpression>
+	</variable>
+	<variable name="solde_1" class="java.lang.Double" resetType="Group" resetGroup="account" calculation="Sum">
+		<variableExpression><![CDATA[$V{debit_1} - $V{credit_1}]]></variableExpression>
+	</variable>
 	<group name="account" keepTogether="true">
 		<groupExpression><![CDATA[$F{account_id}]]></groupExpression>
 		<groupHeader>
@@ -101,25 +107,47 @@
 		<groupFooter>
 			<band height="42">
 				<staticText>
-					<reportElement style="label-strong" x="298" y="10" width="47" height="20" uuid="52d5043d-384e-4840-a3c3-eb48a3871d11"/>
+					<reportElement style="label-strong" x="333" y="10" width="47" height="20" uuid="52d5043d-384e-4840-a3c3-eb48a3871d11"/>
 					<textElement verticalAlignment="Middle">
-						<font fontName="Open Sans"/>
+						<font fontName="SansSerif"/>
 					</textElement>
 					<text><![CDATA[Totaux  :]]></text>
 				</staticText>
 				<textField evaluationTime="Group" evaluationGroup="account" pattern="###0.00" isBlankWhenNull="true">
-					<reportElement x="395" y="10" width="56" height="20" uuid="b6d0c75f-3f1b-4e56-b1cc-00ccbf357120"/>
+					<reportElement x="438" y="10" width="64" height="20" uuid="b6d0c75f-3f1b-4e56-b1cc-00ccbf357120"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<paragraph rightIndent="5"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{credit_1}]]></textFieldExpression>
 				</textField>
 				<textField evaluationTime="Group" evaluationGroup="account" pattern="###0.00" isBlankWhenNull="true">
-					<reportElement x="345" y="10" width="50" height="20" uuid="437422a6-84dc-4c9b-88fd-6ade5c9cabfc"/>
+					<reportElement x="382" y="10" width="58" height="20" uuid="437422a6-84dc-4c9b-88fd-6ade5c9cabfc"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif"/>
 						<paragraph rightIndent="5"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{debit_1}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="67" y="10" width="25" height="20" uuid="2b3eec1d-a4cc-44a1-b01c-eb5fa24f2c32"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{entry_number_1}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="95" y="10" width="100" height="20" uuid="67090ea4-e11e-4c37-bb9f-153b44197cfc"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="SansSerif"/>
+					</textElement>
+					<text><![CDATA[écritures]]></text>
+				</staticText>
+				<textField evaluationTime="Group" evaluationGroup="account" pattern="###0.00" isBlankWhenNull="true">
+					<reportElement x="502" y="10" width="53" height="20" uuid="58e16e1f-4154-44ea-8189-6146d8ddc266"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{debit_1} - $V{credit_1}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
@@ -132,28 +160,36 @@
 			<staticText>
 				<reportElement style="strong" mode="Opaque" x="2" y="29" width="571" height="2" backcolor="#7C9DDD" uuid="5b202e71-e4a3-4be8-8dcb-f735cc04164a"/>
 				<textElement verticalAlignment="Middle">
-					<font pdfFontName="Open Sans"/>
+					<font pdfFontName="SansSerif"/>
 				</textElement>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
 				<reportElement style="title" x="0" y="0" width="554" height="29" uuid="dc35e306-d03e-4288-b40e-74e3bb33d471"/>
 				<textElement>
-					<font fontName="Open Sans" size="16" pdfFontName="Open Sans"/>
+					<font fontName="SansSerif" size="16" />
 				</textElement>
 				<text><![CDATA[Grand Livre]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="394" y="0" width="87" height="29" uuid="1f767bc7-77fd-43fa-856a-11aa51382e90"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif"/>
+				</textElement>
 				<text><![CDATA[Période]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
 				<reportElement style="label" x="481" y="0" width="73" height="15" uuid="4d907b10-d5e8-4bd3-9d40-5d9b30b59dc4"/>
+				<textElement>
+					<font fontName="SansSerif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{started_on_period}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
 				<reportElement style="label" x="481" y="14" width="74" height="15" uuid="da2b48f3-7ab6-4a98-a57c-7f3fe47f151f"/>
+				<textElement>
+					<font fontName="SansSerif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{stopped_on_period}]]></textFieldExpression>
 			</textField>
 		</band>
@@ -164,136 +200,112 @@
 	<columnHeader>
 		<band height="40" splitType="Stretch">
 			<staticText>
-				<reportElement style="table-th" x="131" y="0" width="113" height="40" uuid="52d5043d-384e-4840-a3c3-eb48a3871d11"/>
+				<reportElement style="table-th" x="115" y="0" width="70" height="40" uuid="52d5043d-384e-4840-a3c3-eb48a3871d11"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Open Sans" size="8"/>
+					<font fontName="SansSerif" size="8"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
 				<text><![CDATA[journal]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table-th" x="0" y="0" width="67" height="40" uuid="52d5043d-384e-4840-a3c3-eb48a3871d11"/>
+				<reportElement style="table-th" x="0" y="0" width="56" height="40" uuid="52d5043d-384e-4840-a3c3-eb48a3871d11"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Open Sans" size="8"/>
+					<font fontName="SansSerif" size="8"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
 				<text><![CDATA[date]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table-th" x="67" y="0" width="64" height="40" uuid="52d5043d-384e-4840-a3c3-eb48a3871d11"/>
+				<reportElement style="table-th" x="56" y="0" width="59" height="40" uuid="52d5043d-384e-4840-a3c3-eb48a3871d11"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Open Sans" size="8"/>
+					<font fontName="SansSerif" size="8"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
 				<text><![CDATA[pièce]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table-th" x="345" y="0" width="46" height="40" uuid="52d5043d-384e-4840-a3c3-eb48a3871d11"/>
+				<reportElement style="table-th" x="380" y="0" width="60" height="40" uuid="52d5043d-384e-4840-a3c3-eb48a3871d11"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Open Sans" size="8"/>
+					<font fontName="SansSerif" size="8"/>
 					<paragraph rightIndent="5"/>
 				</textElement>
 				<text><![CDATA[débit]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table-th" x="391" y="0" width="56" height="40" uuid="52d5043d-384e-4840-a3c3-eb48a3871d11"/>
+				<reportElement style="table-th" x="440" y="0" width="62" height="40" uuid="52d5043d-384e-4840-a3c3-eb48a3871d11"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Open Sans" size="8"/>
+					<font fontName="SansSerif" size="8"/>
 					<paragraph rightIndent="5"/>
 				</textElement>
 				<text><![CDATA[crédit]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table-th" x="447" y="0" width="47" height="40" uuid="bdad3ca1-179e-4136-9b1e-bf4d6851a998"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Open Sans" size="8"/>
-					<paragraph rightIndent="5"/>
-				</textElement>
-				<text><![CDATA[débit cumulé]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="table-th" x="494" y="0" width="60" height="40" uuid="ddaed708-520c-4a0b-b8be-9bfcde3bf0e4"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Open Sans" size="8"/>
-					<paragraph rightIndent="5"/>
-				</textElement>
-				<text><![CDATA[crédit cumulé]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="table-th" x="244" y="0" width="101" height="40" uuid="7dc4f371-8856-4e25-a8f5-bcb5c1ec2d49"/>
+				<reportElement style="table-th" x="185" y="0" width="195" height="40" uuid="7dc4f371-8856-4e25-a8f5-bcb5c1ec2d49"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Open Sans" size="8"/>
+					<font fontName="SansSerif" size="8"/>
 				</textElement>
 				<text><![CDATA[libéllé]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table-th" x="502" y="0" width="52" height="40" uuid="0c55af88-f17f-4ce3-bfc5-0be33b9c2062"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<text><![CDATA[solde]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
 		<band height="21" splitType="Stretch">
-			<textField pattern="###0.00" isBlankWhenNull="true">
-				<reportElement style="base" mode="Opaque" x="395" y="0" width="56" height="21" uuid="dba1a483-6562-4082-a5d2-a0dd845fe182">
-					<printWhenExpression><![CDATA[$F{credit}.doubleValue() != 0.0]]></printWhenExpression>
-				</reportElement>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Open Sans" size="9"/>
-					<paragraph rightIndent="5"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{credit}]]></textFieldExpression>
-			</textField>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement style="base" mode="Opaque" x="349" y="0" width="46" height="21" uuid="42865504-0435-4a06-9df0-2151563c4fea">
+				<reportElement style="base" mode="Opaque" x="382" y="0" width="56" height="21" uuid="42865504-0435-4a06-9df0-2151563c4fea">
 					<printWhenExpression><![CDATA[$F{debit}.doubleValue() != 0.0]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Open Sans" size="9"/>
+					<font fontName="SansSerif" size="9"/>
 					<paragraph rightIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{debit}]]></textFieldExpression>
 			</textField>
+			<textField pattern="###0.00" isBlankWhenNull="true">
+				<reportElement style="base" mode="Opaque" x="440" y="0" width="62" height="21" uuid="dba1a483-6562-4082-a5d2-a0dd845fe182">
+					<printWhenExpression><![CDATA[$F{credit}.doubleValue() != 0.0]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="9"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{credit}]]></textFieldExpression>
+			</textField>
 			<textField pattern="" isBlankWhenNull="false">
-				<reportElement style="base" mode="Opaque" x="131" y="0" width="113" height="21" uuid="b8637e72-0dab-486c-980e-630dbe469547"/>
+				<reportElement style="base" mode="Opaque" x="115" y="0" width="70" height="21" uuid="b8637e72-0dab-486c-980e-630dbe469547"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Open Sans" size="9"/>
+					<font fontName="SansSerif" size="7"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{journal_name}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement style="base" mode="Opaque" x="67" y="0" width="64" height="21" uuid="a38d906a-cdce-41e6-8ec3-ca0b9b9f65b6"/>
+				<reportElement style="base" mode="Opaque" x="56" y="0" width="59" height="21" uuid="a38d906a-cdce-41e6-8ec3-ca0b9b9f65b6"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Open Sans" size="9"/>
+					<font fontName="SansSerif" size="7"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{entry_number}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement style="base" mode="Opaque" x="0" y="0" width="67" height="21" uuid="14106f98-080d-4ea6-9add-6ce992833746"/>
+				<reportElement style="base" mode="Opaque" x="0" y="0" width="56" height="21" uuid="14106f98-080d-4ea6-9add-6ce992833746"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Open Sans" size="9"/>
+					<font fontName="SansSerif" size="7"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{entry_printed-on}]]></textFieldExpression>
 			</textField>
-			<textField pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement style="base" mode="Opaque" x="451" y="0" width="43" height="21" uuid="866a80ea-bfc0-4037-88cb-2322a902423a"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Open Sans" size="9"/>
-					<paragraph rightIndent="5"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{cumulated-absolute-debit}]]></textFieldExpression>
-			</textField>
-			<textField pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement style="base" mode="Opaque" x="494" y="0" width="61" height="21" uuid="5bc1b13b-ee0b-4a6b-ac77-6686955890c6"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Open Sans" size="9"/>
-					<paragraph rightIndent="5"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{cumulated-absolute-credit}]]></textFieldExpression>
-			</textField>
 			<textField pattern="" isBlankWhenNull="false">
-				<reportElement style="base" mode="Opaque" x="244" y="0" width="101" height="21" uuid="6f15b30c-b415-4ec9-98ad-36b2d393033f"/>
+				<reportElement style="base" mode="Opaque" x="185" y="0" width="197" height="21" uuid="6f15b30c-b415-4ec9-98ad-36b2d393033f"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Open Sans" size="7"/>
+					<font fontName="SansSerif" size="7"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
@@ -307,61 +319,63 @@
 		<band height="6" splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="34" splitType="Stretch">
+		<band height="27" splitType="Stretch">
 			<textField evaluationTime="Report">
-				<reportElement style="base" x="514" y="5" width="40" height="22" forecolor="#000000" uuid="50272410-1b25-4669-88c3-3be64f156f82"/>
+				<reportElement style="base" x="514" y="0" width="40" height="22" forecolor="#000000" uuid="50272410-1b25-4669-88c3-3be64f156f82"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Open Sans"/>
+					<font fontName="SansSerif"/>
 				</textElement>
 				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy HH.mm.ss">
-				<reportElement style="base" mode="Transparent" x="2" y="5" width="115" height="22" forecolor="#000000" uuid="ebf60a3b-b81b-4ee3-b94d-a83ae04dd811"/>
+				<reportElement style="base" mode="Transparent" x="0" y="1" width="115" height="22" forecolor="#000000" uuid="ebf60a3b-b81b-4ee3-b94d-a83ae04dd811"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Open Sans"/>
+					<font fontName="SansSerif"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="base" x="461" y="5" width="54" height="22" forecolor="#000000" uuid="342f7ef7-5da8-4d85-baf2-2c7968aecaed"/>
+				<reportElement style="base" x="461" y="0" width="54" height="22" forecolor="#000000" uuid="342f7ef7-5da8-4d85-baf2-2c7968aecaed"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Open Sans"/>
+					<font fontName="SansSerif"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}+" /"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="address" x="174" y="1" width="224" height="33" uuid="bed30d3f-2abb-4bc2-a2c2-d4afdaa87984"/>
-				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<reportElement style="address" x="174" y="1" width="224" height="26" uuid="bed30d3f-2abb-4bc2-a2c2-d4afdaa87984"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+                  <font fontName="SansSerif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{address}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>
 	<lastPageFooter>
-		<band height="36">
+		<band height="23">
 			<textField evaluationTime="Report">
-				<reportElement style="base" x="514" y="5" width="40" height="22" forecolor="#000000" uuid="c5669d5d-31af-4dd7-bf88-534422b21b01"/>
+				<reportElement style="base" x="514" y="0" width="40" height="22" forecolor="#000000" uuid="c5669d5d-31af-4dd7-bf88-534422b21b01"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Open Sans"/>
+					<font fontName="SansSerif"/>
 				</textElement>
 				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy HH.mm.ss">
-				<reportElement style="base" mode="Transparent" x="2" y="5" width="115" height="22" forecolor="#000000" uuid="a98f0540-b3f2-4380-aab0-f9d96ea72b6e"/>
+				<reportElement style="base" mode="Transparent" x="0" y="1" width="115" height="22" forecolor="#000000" uuid="a98f0540-b3f2-4380-aab0-f9d96ea72b6e"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Open Sans"/>
+					<font fontName="SansSerif"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="base" x="461" y="5" width="54" height="22" forecolor="#000000" uuid="5de70a0c-bd99-4937-84fa-c172a5df272f"/>
+				<reportElement style="base" x="461" y="0" width="54" height="22" forecolor="#000000" uuid="5de70a0c-bd99-4937-84fa-c172a5df272f"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Open Sans"/>
+					<font fontName="SansSerif"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}+" /"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="address" x="174" y="1" width="224" height="35" uuid="54969179-47f0-402d-a856-b4ac17a0ad05"/>
-				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<reportElement style="address" x="174" y="1" width="224" height="22" uuid="54969179-47f0-402d-a856-b4ac17a0ad05"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{address}]]></textFieldExpression>
 			</textField>
 		</band>
