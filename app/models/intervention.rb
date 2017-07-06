@@ -385,7 +385,7 @@ class Intervention < Ekylibre::Record::Base
   end
 
   def with_undestroyable_products?
-    outputs.map(&:product).detect do |product|
+    outputs.includes(:product).map(&:product).detect do |product|
       next unless product
       InterventionProductParameter.of_actor(product).where.not(type: 'InterventionOutput').any?
     end
@@ -514,7 +514,7 @@ class Intervention < Ekylibre::Record::Base
 
   # Sums all intervention product parameter total_cost of a particular role
   def cost(role = :input)
-    params = product_parameters.of_generic_role(role)
+    params = product_parameters.of_generic_role(role).includes(:intervention)
     return params.map(&:cost).compact.sum if params.any?
     nil
   end
