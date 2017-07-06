@@ -413,7 +413,7 @@ class Intervention < Ekylibre::Record::Base
   end
 
   def targets_list
-    targets.map(&:product).compact.map(&:work_name).sort
+    targets.includes(:product).map(&:product).compact.map(&:work_name).sort
   end
 
   # Returns human target names
