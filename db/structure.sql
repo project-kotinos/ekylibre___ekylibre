@@ -475,7 +475,8 @@ CREATE TABLE interventions (
     accounted_at timestamp without time zone,
     currency character varying,
     journal_entry_id integer,
-    request_compliant boolean
+    request_compliant boolean,
+    cost numeric
 );
 
 
@@ -17861,4 +17862,6 @@ INSERT INTO schema_migrations (version) VALUES ('20170425145302');
 INSERT INTO schema_migrations (version) VALUES ('20170530002312');
 
 INSERT INTO schema_migrations (version) VALUES ('20170602144753');
+
+INSERT INTO schema_migrations (version) VALUES ('20170718140719');
 

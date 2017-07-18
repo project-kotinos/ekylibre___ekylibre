@@ -249,6 +249,7 @@ class Intervention < Ekylibre::Record::Base
                        end
       end
     end
+    self.cost = compute_cost
     true
   end
 
@@ -394,10 +395,6 @@ class Intervention < Ekylibre::Record::Base
     activities.map(&:name).to_sentence
   end
 
-  def product_parameters
-    InterventionProductParameter.where(intervention: self)
-  end
-
   # The Procedo::Procedure behind intervention
   def procedure
     Procedo.find(procedure_name)
@@ -512,9 +509,14 @@ class Intervention < Ekylibre::Record::Base
 
   # Sums all intervention product parameter total_cost of a particular role
   def cost(role = :input)
-    params = product_parameters.of_generic_role(role)
-    return params.map(&:cost).compact.sum if params.any?
-    nil
+    return self[:cost] if self[:cost] && role == :input
+    computed = compute_cost(role)
+    computed.zero? ? nil : computed # Here not to break the current behavior
+  end
+
+  def compute_cost(role = :input)
+    params = product_parameters.of_generic_role(role).includes(:product)
+    params.map(&:cost).compact.sum
   end
 
   def cost_per_area(role = :input, area_unit = :hectare)
