@@ -476,7 +476,7 @@ CREATE TABLE interventions (
     currency character varying,
     journal_entry_id integer,
     request_compliant boolean,
-    cost numeric
+    input_cost numeric
 );
 
 
