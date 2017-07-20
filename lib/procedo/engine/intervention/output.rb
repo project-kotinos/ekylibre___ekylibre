@@ -62,8 +62,8 @@ module Procedo
           hash = super
           hash[:variant_id] = @variant.id if @variant
           hash[:new_name] = @new_name if @new_name.present?
-          hash[:variety] = @variety unless @variety.blank?
-          hash[:derivative_of] = @derivative_of unless @derivative_of.blank?
+          hash[:variety] = @variety if @variety.present?
+          hash[:derivative_of] = @derivative_of if @derivative_of.present?
           hash[:identification_number] = @identification_number if @identification_number.present?
           hash
         end
