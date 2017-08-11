@@ -32,7 +32,7 @@
     .details
       %input#set_period{ type: 'daterange', value: "#{@period_start} &ndash; #{@period_end}".html_safe }
       %label
-        %input#hide-lettered{ type: :checkbox, checked: true }
+        %input#hide-lettered{ type: :checkbox, checked: params[:display_lettered_lines].blank? }
         = :hide_lettered_lines.tl
 
   .list

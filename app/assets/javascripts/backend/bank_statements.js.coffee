@@ -110,8 +110,14 @@
     # Automatic reconciliation
     bankReconciliation.autoReconciliate()
 
-  $(document).on "change", "#hide-lettered", ->
-    bankReconciliation.uiUpdate()
+  $(document).on "change", "#hide-lettered", (event) ->
+    #bankReconciliation.uiUpdate()
+
+    if $(event.target).is(':not(:checked)')
+      window.location.href += "&display_lettered_lines=true"
+    else if window.location.href.search('&display_lettered_lines') != -1
+      window.location.href = window.location.href.replace('&display_lettered_lines=true', '')
+
 
   $(document).on "datepicker-change", "#set_period", (event, dates) ->
     current_params = document.location.search
@@ -308,7 +314,7 @@
       @_showOrHideClearButtons()
       @_showOrHideCompleteButtons()
       @_showOrHideNewPaymentButtons()
-      @_showOrHideReconciliatedLines()
+      #@_showOrHideReconciliatedLines()
 
     _showOrHideClearButtons: ->
       @_showAndHideLinkForCollection 'clear',
