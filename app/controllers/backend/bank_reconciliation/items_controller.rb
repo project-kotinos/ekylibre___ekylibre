@@ -20,7 +20,7 @@ module Backend
         cash = cash.first if cash.is_a?(Array)
         set_period!
 
-        @items = cash.journal_entry_items.between(@period_start, @period_end)
+        @items = cash.unpointed_journal_entry_items.between(@period_start, @period_end)
 
         @bank_statements.each do |bank_statement|
           reconciliate_one(bank_statement)
@@ -60,7 +60,7 @@ module Backend
         bank_statement_items = bank_statement.items.transfered_between(@period_start, @period_end) unless @bank_statements.nil?
 
         journal_entry_items  = bank_statement.eligible_entries_in(@period_start, @period_end) unless @bank_statement.nil?
-        journal_entry_items  = JournalEntryItem.pointed_by(bank_statement).between(@period_start, @period_end) unless @bank_statements.nil?
+        journal_entry_items  = JournalEntryItem.pointed_by_letters(bank_statement_items.map(&:letter)).between(@period_start, @period_end) unless @bank_statements.nil?
 
         return no_entries if journal_entry_items.blank? && @bank_statements.nil?
 
