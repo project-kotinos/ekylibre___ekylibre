@@ -20,7 +20,7 @@ module Backend
         cash = cash.first if cash.is_a?(Array)
         set_period!
 
-        @items = cash.unpointed_journal_entry_items.between(@period_start, @period_end)
+        @items = cash.journal_entry_items.between(@period_start, @period_end)
 
         @bank_statements.each do |bank_statement|
           reconciliate_one(bank_statement)

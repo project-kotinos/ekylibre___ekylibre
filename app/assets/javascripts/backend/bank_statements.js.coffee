@@ -404,6 +404,17 @@
           lines.find(".details .letter").text response.letter
           lines.removeClass "selected"
           lines.addClass "lettered"
+
+          bankStatementId = $(lines).filter('[data-type="bank_statement_item"]').attr('data-id')
+          clearLabel = $('#clear_label').val()
+
+          clearUrl = "/backend/bank-reconciliation/letters/" + bankStatementId + "?letter=" + response.letter
+          clearElement = $('<a href="' + clearUrl + '" data-remote="true" data-method="delete" id="clear"></a>')
+          $(clearElement).append('<i></i>')
+          $(clearElement).append('<span>' + clearLabel + '</span>')
+
+          lines.find('.details').append(clearElement)
+
           $(lines).find(".debit, .credit").trigger "change"
           @uiUpdate()
           return true

@@ -3,6 +3,7 @@
 - cash_id = @bank_statement.cash.id unless @bank_statement.nil?
 
 = hidden_field_tag :cash_id, cash_id
+= hidden_field_tag :clear_label, :clear.tl
 .reconciliation-list{ data: { currency_precision: precision } }
   .top-part
     .buttons

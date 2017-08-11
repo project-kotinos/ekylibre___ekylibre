@@ -19,7 +19,8 @@ module Backend
       def destroy
         return unless request.xhr?
 
-        @bank_statement = BankStatement.find_by(id: params[:id])
+        @bank_statement_item = BankStatementItem.find_by(id: params[:id])
+        @bank_statement = @bank_statement_item.bank_statement
         return unless @bank_statement
 
         letter = params[:letter]
