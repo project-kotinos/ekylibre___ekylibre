@@ -19,19 +19,29 @@ module Backend
       def destroy
         return unless request.xhr?
 
-        @bank_statement_item = BankStatementItem.find_by(id: params[:id])
-        @bank_statement = @bank_statement_item.bank_statement
-        return unless @bank_statement
+        @cash = Cash.find(params[:cash_id])
+        @cash = @cash.first if @cash.is_a?(Array)
+        return unless @cash
+
+        #if params[:type] == "journal_entry_item"
+          #@bank_statement = JournalEntryItem.find_by(id: params[:id]).bank_statement
+        #else
+          #@bank_statement = BankStatementItem.find_by(id: params[:id]).bank_statement
+        #end
+        #return unless @bank_statement
 
         letter = params[:letter]
         JournalEntryItem
-          .pointed_by(@bank_statement)
-          .where(bank_statement_letter: letter)
+          .pointed_by_letters(letter, @cash)
           .update_all(bank_statement_letter: nil, bank_statement_id: nil)
-        @bank_statement
-          .items
-          .where(letter: letter)
-          .update_all(letter: nil)
+
+
+        BankStatement
+          .find_by_cash(@cash)
+          .map(&:items)
+          .flatten
+          .select{ |bank_statement_item| bank_statement_item.letter == letter }
+          .map{ |bank_statement_item| bank_statement_item.update(letter: nil) }
 
         respond_to do |format|
           format.json {  render json: { letter: letter } }

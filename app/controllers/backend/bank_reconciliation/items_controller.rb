@@ -16,11 +16,11 @@ module Backend
       def reconciliate
         return unless find_bank_statements
 
-        cash = Cash.find(params[:cash_id])
-        cash = cash.first if cash.is_a?(Array)
+        @cash = Cash.find(params[:cash_id])
+        @cash = @cash.first if @cash.is_a?(Array)
         set_period!
 
-        @items = cash.unpointed_journal_entry_items.between(@period_start, @period_end)
+        @items = @cash.unpointed_journal_entry_items.between(@period_start, @period_end)
 
         if params[:display_lettered_lines].present?
           @bank_statements.each do |bank_statement|
@@ -30,7 +30,7 @@ module Backend
 
         @items_grouped_by_date = group_by_date(@items)
 
-        t3e cash: cash.name, started_on: @period_start.l, stopped_on: @period_end.l
+        t3e cash: @cash.name, started_on: @period_start.l, stopped_on: @period_end.l
       end
 
       def count
@@ -62,8 +62,8 @@ module Backend
         bank_statement_items = bank_statement.items.transfered_between(@period_start, @period_end) unless @bank_statements.nil?
 
         journal_entry_items  = bank_statement.eligible_entries_in(@period_start, @period_end) unless @bank_statement.nil?
-        #journal_entry_items  = JournalEntryItem.pointed_by_letters(bank_statement_items.map(&:letter)).between(@period_start, @period_end) unless @bank_statements.nil?
-        journal_entry_items  = JournalEntryItem.pointed_by(bank_statement).between(@period_start, @period_end) unless @bank_statements.nil?
+        journal_entry_items  = JournalEntryItem.pointed_by_letters(bank_statement_items.map(&:letter), @cash).between(@period_start, @period_end) unless @bank_statements.nil?
+        #journal_entry_items  = JournalEntryItem.pointed_by(bank_statement).between(@period_start, @period_end) unless @bank_statements.nil?
 
         return no_entries if journal_entry_items.blank? && @bank_statements.nil?
 

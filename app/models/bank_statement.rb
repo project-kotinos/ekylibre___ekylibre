@@ -69,6 +69,10 @@ class BankStatement < Ekylibre::Record::Base
     find_by('started_on <= ? AND stopped_on >= ? AND cash_id = ?', started_on, stopped_on, cash_id)
   }
 
+  scope :find_by_cash, lambda { |cash|
+    where(cash: cash)
+  }
+
   before_validation do
     self.currency = cash_currency if cash
     active_items = items.to_a.delete_if(&:marked_for_destruction?)

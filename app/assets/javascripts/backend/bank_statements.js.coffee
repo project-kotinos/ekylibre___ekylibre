@@ -411,10 +411,13 @@
           lines.removeClass "selected"
           lines.addClass "lettered"
 
-          bankStatementId = $(lines).filter('[data-type="bank_statement_item"]').attr('data-id')
+          if (lines.find("#complete").length > 0)
+            lines.find("#complete").remove()
+
+          bankStatementItemId = $(lines).filter('[data-type="bank_statement_item"]').attr('data-id')
           clearLabel = $('#clear_label').val()
 
-          clearUrl = "/backend/bank-reconciliation/letters/" + bankStatementId + "?letter=" + response.letter
+          clearUrl = "/backend/bank-reconciliation/letters/" + bankStatementItemId + "?letter=" + response.letter + "&cash_id=" + $('#cash_id').val()
           clearElement = $('<a href="' + clearUrl + '" data-remote="true" data-method="delete" id="clear"></a>')
           $(clearElement).append('<i></i>')
           $(clearElement).append('<span>' + clearLabel + '</span>')

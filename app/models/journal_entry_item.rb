@@ -125,8 +125,8 @@ class JournalEntryItem < Ekylibre::Record::Base
   scope :pointed_by, lambda { |bank_statement|
     where('bank_statement_letter IS NOT NULL').where(bank_statement_id: bank_statement.id)
   }
-  scope :pointed_by_letters, lambda { |bank_statement_letters|
-    where(bank_statement_letter: bank_statement_letters)
+  scope :pointed_by_letters, lambda { |bank_statement_letters, cash|
+    where(bank_statement_letter: bank_statement_letters, account: cash.suspense_account)
   }
   scope :pointed_by_with_letter, lambda { |bank_statement, letter|
     where(bank_statement_letter: letter).where(bank_statement_id: bank_statement.id)

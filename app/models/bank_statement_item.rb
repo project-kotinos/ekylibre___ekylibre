@@ -60,6 +60,10 @@ class BankStatementItem < Ekylibre::Record::Base
     where('transfered_on >= ? AND transfered_on <= ?', period_start, period_end)
   }
 
+  scope :pointed_by_letters, lambda { |letters, cash|
+    where(letter: letters, account: cash.suspense_account)
+  }
+
   before_validation do
     self.currency = bank_statement.currency if bank_statement
     self.debit ||= 0
