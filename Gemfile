@@ -120,6 +120,7 @@ gem 'omniauth-oauth2'
 # Attachments
 gem 'paperclip'
 gem 'paperclip-document', '> 0.0.8'
+gem 'aws-sdk-s3'
 
 # Forms
 gem 'cocoon'
