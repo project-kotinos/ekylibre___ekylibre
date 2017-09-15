@@ -39,6 +39,12 @@
 #  name                  :string           not null
 #  nature                :string           not null
 #  source_content_type   :string
+#  source_file_name      :string
+#  source_file_size      :integer
+#  source_updated_at     :datetime
+#  updated_at            :datetime         not null
+#  updater_id            :integer
+#
 
 #  source_file_name      :string
 #  source_file_size      :integer
@@ -54,12 +60,10 @@ class DocumentTemplate < Ekylibre::Record::Base
   refers_to :nature, class_name: 'DocumentNature'
   has_many :documents, class_name: 'Document', foreign_key: :template_id, dependent: :nullify, inverse_of: :template
 
-
   has_attached_file :compiled, path: ':tenant/:class/:id.jasper'
   validates_attachment_file_name :compiled,
-    matches: [/jasper\z/],
-    :message => :wrong_jasper_content_type
-
+                                 matches: [/jasper\z/],
+                                 message: :wrong_jasper_content_type
 
   # [VALIDATORS[ Do not edit these lines directly. Use `rake clean:validations`.
   validates :active, :by_default, :managed, inclusion: { in: [true, false] }
@@ -116,10 +120,10 @@ class DocumentTemplate < Ekylibre::Record::Base
   end
 
   def check_compiled_content_type
-   validates_attachment_file_name :compiled, matches: [/jasper\z/]
-   if !['jasper'].include?(self.compiled_content_type)
-    errors.add_to_base(t('activerecord.errors.messages.wrong_jasper_content_type')) # or errors.add
-   end
+    validates_attachment_file_name :compiled, matches: [/jasper\z/]
+    unless ['jasper'].include?(compiled_content_type)
+      errors.add_to_base(t('activerecord.errors.messages.wrong_jasper_content_type')) # or errors.add
+    end
   end
 
   # Install the source of a document template
@@ -136,7 +140,7 @@ class DocumentTemplate < Ekylibre::Record::Base
 
   # Returns the expected path for the source file
   def source_path
-    source_dir.join("#{id.to_s}.jasper")
+    source_dir.join("#{id}.jasper")
   end
 
   # Print a document with the given datasource and return raw data
@@ -241,9 +245,7 @@ class DocumentTemplate < Ekylibre::Record::Base
           purchases_estimate: :purchase,
           purchases_invoice: :purchase
         }[nature.to_sym]
-        if fallback
-          stack << root.join("#{fallback}.jasper")
-        end
+        stack << root.join("#{fallback}.jasper") if fallback
       end
       stack
     end
@@ -262,9 +264,9 @@ class DocumentTemplate < Ekylibre::Record::Base
                 template = new(nature: nature, managed: true, active: true, by_default: false, archiving: 'last')
               end
 
-              puts "nature: #{nature}".green
-              puts "Template id: #{template.id}".green
-              puts "Template methods: #{template.methods}".green
+              # puts "nature: #{nature}".green
+              # puts "Template id: #{template.id}".green
+              # puts "Template methods: #{template.methods}".green
 
               unless template.source_file_name.nil?
                 xml_file_path = source_dir.join(template.source_file_name)

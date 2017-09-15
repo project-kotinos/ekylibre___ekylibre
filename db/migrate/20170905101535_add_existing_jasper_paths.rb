@@ -1,12 +1,10 @@
 class AddExistingJasperPaths < ActiveRecord::Migration
   def change
-
     reversible do |dir|
       dir.up do
-
         corporate_identity_file_path = Rails.root.join('config', 'corporate_identity', 'reporting_style.xml')
 
-        tenant_folder = Rails.root.join('private', Ekylibre::Tenant::current)
+        tenant_folder = Rails.root.join('private', Ekylibre::Tenant.current)
         attachments_folder = tenant_folder.join('attachments')
         reporting_folder = tenant_folder.join('reporting')
 
@@ -15,11 +13,10 @@ class AddExistingJasperPaths < ActiveRecord::Migration
 
         document_templates_ids = select_values('SELECT id FROM document_templates')
         document_templates_ids.each do |document_template_id|
-
-          old_source_file_name = "content.xml"
+          old_source_file_name = 'content.xml'
           new_source_file_name = "#{document_template_id}.xml"
 
-          old_compiled_file_name = "content.xml.jasper"
+          old_compiled_file_name = 'content.xml.jasper'
           new_compiled_file_name = "#{document_template_id}.jasper"
 
           old_document_template_folder = reporting_folder.join(document_template_id.to_s)
@@ -32,16 +29,16 @@ class AddExistingJasperPaths < ActiveRecord::Migration
 
           tmp_source_file_path = old_document_template_folder.join("tmp_#{old_source_file_name}")
 
-          next unless File.exists?(old_jrxml_file_path)
+          next unless File.exist?(old_jrxml_file_path)
 
-          JasperFilesManager::create_tmp_jrxml(old_jrxml_file_path, corporate_identity_file_path, tmp_source_file_path)
-          JasperFilesManager::compile_jasper_file(tmp_source_file_path, new_compiled_file_path)
-          JasperFilesManager::delete_file(tmp_source_file_path)
-          JasperFilesManager::remove_jasper_template_tag(old_jrxml_file_path)
+          JasperFilesManager.create_tmp_jrxml(old_jrxml_file_path, corporate_identity_file_path, tmp_source_file_path)
+          JasperFilesManager.compile_jasper_file(tmp_source_file_path, new_compiled_file_path)
+          JasperFilesManager.delete_file(tmp_source_file_path)
+          JasperFilesManager.remove_jasper_template_tag(old_jrxml_file_path)
 
           FileUtils.mv(old_jrxml_file_path, new_jrxml_file_path)
 
-          if File.exists?(old_compiled_file_path)
+          if File.exist?(old_compiled_file_path)
             FileUtils.mv(old_compiled_file_path, new_compiled_file_path)
           end
 
@@ -58,9 +55,8 @@ class AddExistingJasperPaths < ActiveRecord::Migration
                 source_content_type = 'application/xml',
                 source_file_size = #{source_file_size},
                 source_updated_at = '#{DateTime.now}'
-            WHERE id = #{document_template_id.to_s};
+            WHERE id = #{document_template_id};
           ")
-
         end
         FileUtils.rm_rf(reporting_folder)
       end
