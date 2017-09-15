@@ -691,6 +691,7 @@ arb:
         too_long: "%{attribute} طويل جدا (%{count}الحد الاقصى للاحرف)"
         too_short: "%{attribute} قصير جدا (%{count}الحد الادنى للاحرف)"
         unitary_in_parcel: "لا يمكن إلا أن ترسل وحدات موحدة واحدا تلو الآخر"
+        # wrong_jasper_content_type: "File extension must be .jasper"
         wrong_length: "%{attribute} الطول الخاطئ  ( %{count} يجب ان يكون عدد الاحرف)"
       models:
         activity:

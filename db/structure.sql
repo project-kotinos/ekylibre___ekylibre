@@ -2156,7 +2156,15 @@ CREATE TABLE document_templates (
     updated_at timestamp without time zone NOT NULL,
     creator_id integer,
     updater_id integer,
-    lock_version integer DEFAULT 0 NOT NULL
+    lock_version integer DEFAULT 0 NOT NULL,
+    compiled_file_name character varying,
+    compiled_content_type character varying,
+    compiled_file_size integer,
+    compiled_updated_at timestamp without time zone,
+    source_file_name character varying,
+    source_content_type character varying,
+    source_file_size integer,
+    source_updated_at timestamp without time zone
 );
 
 
@@ -17735,6 +17743,10 @@ INSERT INTO schema_migrations (version) VALUES ('20161124093205');
 
 INSERT INTO schema_migrations (version) VALUES ('20161201142213');
 
+INSERT INTO schema_migrations (version) VALUES ('20161205085335');
+
+INSERT INTO schema_migrations (version) VALUES ('20161205101535');
+
 INSERT INTO schema_migrations (version) VALUES ('20161205185328');
 
 INSERT INTO schema_migrations (version) VALUES ('20161212183910');
@@ -17868,4 +17880,3 @@ INSERT INTO schema_migrations (version) VALUES ('20170804101025');
 INSERT INTO schema_migrations (version) VALUES ('20170818134454');
 
 INSERT INTO schema_migrations (version) VALUES ('20170831071726');
-

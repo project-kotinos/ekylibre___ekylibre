@@ -134,9 +134,10 @@ ita:
           one: "è troppo corto (il minimo è 1 carattere)" #?
           other: "è troppo corto (il minimo è %{count} caratteri)" #?
         unitary_in_parcel: "elementi unitari possono essere inviati solo uno per uno"
-        wrong_length: #? String expected ("%{attribute} is the wrong length (should be %{count} characters)")
-          one: "è della lunghezza sbagliata (deve essere di 1 carattere)" #?
-          other: "è della lunghezza sbagliata (deve essere di %{count} caratteri)" #?
+        # wrong_jasper_content_type: "File extension must be .jasper"
+        wrong_length:  #? String excepted (Hash:{:one=>"è della lunghezza sbagliata (deve essere di 1 carattere)", :other=>"è della lunghezza sbagliata (deve essere di %{count} caratteri)"})
+          one: "è della lunghezza sbagliata (deve essere di 1 carattere)" #? String excepted (Hash:{:one=>"è della lunghezza sbagliata (deve essere di 1 carattere)", :other=>"è della lunghezza sbagliata (deve essere di %{count} caratteri)"})
+          other: "è della lunghezza sbagliata (deve essere di %{count} caratteri)" #? String excepted (Hash:{:one=>"è della lunghezza sbagliata (deve essere di 1 carattere)", :other=>"è della lunghezza sbagliata (deve essere di %{count} caratteri)"})
       models:
         activity:
           checked_off_with_inspections: "Le ispezioni sono già stati creati per questa attività"

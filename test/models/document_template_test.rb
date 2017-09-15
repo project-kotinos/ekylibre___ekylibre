@@ -22,20 +22,28 @@
 #
 # == Table: document_templates
 #
-#  active       :boolean          default(FALSE), not null
-#  archiving    :string           not null
-#  by_default   :boolean          default(FALSE), not null
-#  created_at   :datetime         not null
-#  creator_id   :integer
-#  formats      :string
-#  id           :integer          not null, primary key
-#  language     :string           not null
-#  lock_version :integer          default(0), not null
-#  managed      :boolean          default(FALSE), not null
-#  name         :string           not null
-#  nature       :string           not null
-#  updated_at   :datetime         not null
-#  updater_id   :integer
+#  active                :boolean          default(FALSE), not null
+#  archiving             :string           not null
+#  by_default            :boolean          default(FALSE), not null
+#  compiled_content_type :string
+#  compiled_file_name    :string
+#  compiled_file_size    :integer
+#  compiled_updated_at   :datetime
+#  created_at            :datetime         not null
+#  creator_id            :integer
+#  formats               :string
+#  id                    :integer          not null, primary key
+#  language              :string           not null
+#  lock_version          :integer          default(0), not null
+#  managed               :boolean          default(FALSE), not null
+#  name                  :string           not null
+#  nature                :string           not null
+#  source_content_type   :string
+#  source_file_name      :string
+#  source_file_size      :integer
+#  source_updated_at     :datetime
+#  updated_at            :datetime         not null
+#  updater_id            :integer
 #
 
 require 'test_helper'
