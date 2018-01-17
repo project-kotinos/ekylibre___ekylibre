@@ -1269,6 +1269,7 @@ fra:
     employee_involvement: "Participations des salariés"
     employee_name: "Employé" #?
     end: "au"
+    end_line_undetect: "Fin d'allée non détectée"
     entities: "Tiers"
     entity: "Tiers" #?
     entity_links: "Liens entre entité"
@@ -1324,6 +1325,7 @@ fra:
     export_backup: "Export d’un fichier de sauvegarde" #?
     exportation: "Exportation" #?
     extract: "Extraire" #?
+    falling_robot: "Robot tombé"
     fat_matters_concentration: "Teneur en matières grasses" #?
     fax: "Fax" #?
     field_distribution: "Parcellaire"
@@ -1558,6 +1560,8 @@ fra:
     lock: "Verrouiller"
     logout: "Déconnexion" #?
     losses: "Charges d’exploitations"
+    losing_robot: "Robot perdu"
+    loss_rtk: "Signal RTK insuffisant"
     mail: "Envoyer un courriel"
     mailing: "Mailing"
     mails:
@@ -1805,6 +1809,7 @@ fra:
     plant_counting: "Comptage"
     plant_countings: "Comptages"
     plant_productions: "Productions végétales" #?
+    plant_security: "Sécurité culture"
     plantation_density: "Densité de plantation"
     plants: "Plantes"
     please_wait: "Merci de patienter…"
@@ -2040,6 +2045,7 @@ fra:
     select_organization: "Organisation" #?
     selection: "Sélection"
     semester: "Semestre"
+    semi_turn: "Demi-tour"
     send_mail: "Envoyer le mail"
     send_test_mail: "Envoyer un mail de test"
     sensor_indicators: "Indicateurs de capteur" #?
@@ -2092,6 +2098,7 @@ fra:
     stop: "Jusqu’au"
     stopped: "Arrêtés"
     stopped_on: "Nous nous sommes arrêtés sur"
+    stopped_robot: "Robot arrêté"
     storage: "Support"
     string_case: "Options pour le texte" #?
     subject: "Sujet"

@@ -1,7 +1,6 @@
 - count = 0
 :ruby
   data = []
-  data_crumbs = []
   resource.targets.each do |parameter|
     shape = parameter.working_zone
     shape ||= parameter.product.shape(at: resource.started_at) if parameter.product
@@ -26,6 +25,64 @@
       count += 1
     end
   end
+  
+  # for naio test
+  data_naio = []
+  p_ids = resource.product_parameters.pluck(:product_id)
+  p = Product.where(id: p_ids).where(work_number: "NAIO").first
+  p.readings.where("product_readings.indicator_name = 'geolocation'").where("read_at BETWEEN ? AND ?", resource.started_at, resource.stopped_at).each do |point|
+    item = {
+          name: p.name,
+          shape: point.point_value
+        }
+    data_naio << item
+    count += 1
+  end
+  
+  # for naio test with sensor
+  
+  color_nature = {
+            losing_robot: "#FF0000", #Oz alerte : Robot perdu
+            stopped_robot: "#FF8000", #Oz Alerte : Robot arrete, obstacle allee
+            semi_turn: "#81F781", #Oz Alerte : Demi-tour
+            falling_robot: "#FF0000", #Oz Alerte : Robot tombe. Le redresser, verifier l'absence de fuite sur les batteries
+            loss_rtk: "#FFFF00", #Oz Alerte : Signal RTK insuffisant pour continuer le travail
+            end_line_undetect: "#F781D8", # Oz Alerte: Fin d'allee non detectee
+            plant_security: "#173B0B" #Oz Alerte: Securite culture (bulle)
+            }
+  
+  data_sensor_naio = []
+  sensor = Sensor.where(euid: "33640670776").first
+  alert_ids = sensor.alerts.pluck(:id)
+  sensor.analyses.each do |analysis|
+    
+    puts analysis.analysed_at.inspect.yellow
+    
+    phase = AlertPhase.where(started_at: analysis.analysed_at).first
+    puts phase.inspect.red
+    if phase
+      bottom_line = ''
+      popup_lines = []
+      popup_lines << { content: phase.alert.nature.tl }
+      bottom_line << "<i class='icon icon-portable-wifi-off' style='color: red;'></i>" if phase && phase.alert.nature.to_s == 'losing_robot'
+      bottom_line << "<i class='icon icon-portable-wifi-off' style='color: red;'></i>" if phase && phase.alert.nature.to_s == 'loss_rtk'
+      
+      popup_lines << ("<div style='display: flex; justify-content: space-between'>" + bottom_line + '</div>').html_safe
+      header_content = "<span class='sensor-name'>#{sensor.name}</span>".html_safe
+      item = {    sensor_id: sensor.id,
+                  name: sensor.name,
+                  shape: analysis.geolocation,
+                  shape_color: color_nature[phase.alert.nature.to_sym],
+                  group: phase.alert.nature.tl,
+                  popup: { header: header_content, content: popup_lines }
+                }
+      
+      data_sensor_naio << item
+    end
+  end
+    
+    
+  
 - map = visualization do |v|
   - if data.any?
     - v.serie :main, data
@@ -34,6 +91,12 @@
     - if parameter.crumbs.any?
       - v.serie "path_#{parameter.id}", parameter.crumbs.reorder(:read_at).collect{|c| {name: parameter.name, shape: c.geolocation}}
       - v.path (parameter.product ? parameter.product.name : parameter.variant ? parameter.variant.name : parameter.name), "path_#{parameter.id}"
+      - count += 1
+    - elsif parameter.product && parameter.product.is_a?(Equipment)
+      -# v.serie :second, data_naio
+      -# v.points :geolocation, :second
+      - v.serie :sensor_data, data_sensor_naio
+      - v.point_group :sensors, :sensor_data
       - count += 1
   - v.control :zoom
   - v.control :scale
