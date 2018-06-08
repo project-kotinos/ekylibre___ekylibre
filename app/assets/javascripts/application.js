@@ -81,6 +81,15 @@
 //= require bootstrap-slider
 
 //= require vue
+//= require sortablejs/Sortable.min.js
+//= require vuedraggable/dist/vuedraggable.js
+//= require chart.js/dist/Chart.min.js
+//= require vue-chartjs/dist/vue-chartjs.min.js
+
+//= require ext-plugins/vuejs/vue-chartjs
+
+
+//= require vue
 
 
 var visualization = {};

@@ -296,9 +296,12 @@ module Backend
         permitted_params[:participations_attributes] = participations
       end
 
+      # binding.pry
       @intervention = Intervention.new(permitted_params)
       url = if params[:create_and_continue]
               { action: :new, continue: true }
+            elsif URI(request.referer).path == '/backend/schedulings/new_detailed_intervention'
+              backend_schedulings_path
             else
               params[:redirect] || { action: :show, id: 'id'.c }
             end
@@ -360,6 +363,13 @@ module Backend
         head(:not_found)
         return
       end
+
+      unless intervention_params[:tools_attributes].nil?
+        intervention_params[:tools_attributes]
+          .values
+          .each { |tool_attributes| tool_attributes.except!(:readings_attributes) }
+      end
+
       intervention = Procedo::Engine.new_intervention(intervention_params)
       begin
         intervention.impact_with!(params[:updater])

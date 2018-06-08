@@ -113,7 +113,20 @@ class Intervention < Ekylibre::Record::Base
 
   calculable period: :month, column: :working_duration, at: :started_at, name: :sum
 
-  acts_as_numbered
+  acts_as_numbered unless: :run_sequence
+
+  before_validation :set_number, on: :create
+
+  def set_number
+    if request_intervention.present?
+      self.number = request_intervention.number
+    end
+  end
+
+  def run_sequence
+    request_intervention.present?
+  end
+
   accepts_nested_attributes_for :group_parameters, :participations, :doers, :inputs, :outputs, :targets, :tools, :working_periods, :labellings, allow_destroy: true
   accepts_nested_attributes_for :receptions, reject_if: :all_blank, allow_destroy: true
 

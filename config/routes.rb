@@ -238,6 +238,7 @@ Rails.application.routes.draw do
     resources :activity_productions, concerns: [:unroll] do
       member do
         get :list_interventions
+        get :list_plants
       end
     end
 
@@ -736,6 +737,14 @@ Rails.application.routes.draw do
       concerns :products, :list
     end
 
+    resources :naming_formats, concerns: %i[list unroll]
+
+    resources :naming_format_land_parcels, concerns: %i[list unroll] do
+      collection do
+        get :build_example
+      end
+    end
+
     resources :net_services, concerns: [:list] do
       member do
         get :list_identifiers
@@ -841,6 +850,32 @@ Rails.application.routes.draw do
     resources :plant_countings, concerns: [:list]
 
     resources :preferences, only: %i[update]
+
+    namespace :products do
+      resources :interventions, only: [] do
+        member do
+          get :has_harvesting
+        end
+      end
+
+      resources :indicators, only: [] do
+        member do
+          get :variable_indicators
+        end
+      end
+
+      resources :search_products, only: [] do
+        member do
+          get :datas
+        end
+      end
+
+      resources :search_variants, only: [] do
+        collection do
+          get :search_by_expression
+        end
+      end
+    end
 
     resources :product_groups, concerns: :products
 

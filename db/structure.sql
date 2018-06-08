@@ -346,7 +346,11 @@ CREATE TABLE activity_productions (
     campaign_id integer,
     custom_fields jsonb,
     season_id integer,
-    tactic_id integer
+    tactic_id integer,
+    predicated_sowing_date date,
+    batch_planting boolean,
+    number_of_batch integer,
+    sowing_interval integer
 );
 
 
@@ -440,7 +444,9 @@ CREATE TABLE intervention_parameters (
     currency character varying,
     unit_pretax_stock_amount numeric(19,4) DEFAULT 0.0 NOT NULL,
     dead boolean DEFAULT false NOT NULL,
-    identification_number character varying
+    identification_number character varying,
+    variety character varying,
+    batch_number character varying
 );
 
 
@@ -774,6 +780,73 @@ CREATE SEQUENCE activity_inspection_point_natures_id_seq
 --
 
 ALTER SEQUENCE activity_inspection_point_natures_id_seq OWNED BY activity_inspection_point_natures.id;
+
+
+--
+-- Name: activity_production_batches; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE activity_production_batches (
+    id integer NOT NULL,
+    number integer,
+    day_interval integer,
+    irregular_batch boolean DEFAULT false,
+    activity_production_id integer,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: activity_production_batches_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE activity_production_batches_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: activity_production_batches_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE activity_production_batches_id_seq OWNED BY activity_production_batches.id;
+
+
+--
+-- Name: activity_production_irregular_batches; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE activity_production_irregular_batches (
+    id integer NOT NULL,
+    activity_production_batch_id integer,
+    estimated_sowing_date date,
+    area numeric,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: activity_production_irregular_batches_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE activity_production_irregular_batches_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: activity_production_irregular_batches_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE activity_production_irregular_batches_id_seq OWNED BY activity_production_irregular_batches.id;
 
 
 --
@@ -3795,6 +3868,7 @@ CREATE SEQUENCE intervention_participations_id_seq
 ALTER SEQUENCE intervention_participations_id_seq OWNED BY intervention_participations.id;
 
 
+
 --
 -- Name: intervention_working_periods; Type: TABLE; Schema: public; Owner: -
 --
@@ -4513,6 +4587,70 @@ CREATE SEQUENCE map_layers_id_seq
 --
 
 ALTER SEQUENCE map_layers_id_seq OWNED BY map_layers.id;
+
+
+--
+-- Name: naming_format_fields; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE naming_format_fields (
+    id integer NOT NULL,
+    type character varying NOT NULL,
+    field_name character varying NOT NULL,
+    "position" integer,
+    naming_format_id integer
+);
+
+
+--
+-- Name: naming_format_fields_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE naming_format_fields_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: naming_format_fields_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE naming_format_fields_id_seq OWNED BY naming_format_fields.id;
+
+
+--
+-- Name: naming_formats; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE naming_formats (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    type character varying NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+--
+-- Name: naming_formats_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE naming_formats_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: naming_formats_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE naming_formats_id_seq OWNED BY naming_formats.id;
 
 
 --
@@ -7146,6 +7284,20 @@ ALTER TABLE ONLY activity_inspection_point_natures ALTER COLUMN id SET DEFAULT n
 
 
 --
+-- Name: activity_production_batches id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY activity_production_batches ALTER COLUMN id SET DEFAULT nextval('activity_production_batches_id_seq'::regclass);
+
+
+--
+-- Name: activity_production_irregular_batches id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY activity_production_irregular_batches ALTER COLUMN id SET DEFAULT nextval('activity_production_irregular_batches_id_seq'::regclass);
+
+
+--
 -- Name: activity_productions id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -7713,6 +7865,20 @@ ALTER TABLE ONLY map_layers ALTER COLUMN id SET DEFAULT nextval('map_layers_id_s
 
 
 --
+-- Name: naming_format_fields id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY naming_format_fields ALTER COLUMN id SET DEFAULT nextval('naming_format_fields_id_seq'::regclass);
+
+
+--
+-- Name: naming_formats id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY naming_formats ALTER COLUMN id SET DEFAULT nextval('naming_formats_id_seq'::regclass);
+
+
+--
 -- Name: net_services id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -8223,6 +8389,22 @@ ALTER TABLE ONLY activity_inspection_calibration_scales
 
 ALTER TABLE ONLY activity_inspection_point_natures
     ADD CONSTRAINT activity_inspection_point_natures_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: activity_production_batches activity_production_batches_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY activity_production_batches
+    ADD CONSTRAINT activity_production_batches_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: activity_production_irregular_batches activity_production_irregular_batches_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY activity_production_irregular_batches
+    ADD CONSTRAINT activity_production_irregular_batches_pkey PRIMARY KEY (id);
 
 
 --
@@ -8874,6 +9056,22 @@ ALTER TABLE ONLY map_layers
 
 
 --
+-- Name: naming_format_fields naming_format_fields_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY naming_format_fields
+    ADD CONSTRAINT naming_format_fields_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: naming_formats naming_formats_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY naming_formats
+    ADD CONSTRAINT naming_formats_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: net_services net_services_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -9377,7 +9575,6 @@ ALTER TABLE ONLY wice_grid_serialized_queries
     ADD CONSTRAINT wice_grid_serialized_queries_pkey PRIMARY KEY (id);
 
 
---
 -- Name: index_account_balances_on_account_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -13739,6 +13936,13 @@ CREATE INDEX index_map_layers_on_updater_id ON map_layers USING btree (updater_i
 
 
 --
+-- Name: index_naming_format_fields_on_naming_format_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_naming_format_fields_on_naming_format_id ON naming_format_fields USING btree (naming_format_id);
+
+
+--
 -- Name: index_net_services_on_created_at; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -13999,6 +14203,55 @@ CREATE INDEX index_outgoing_payments_on_updater_id ON outgoing_payments USING bt
 
 --
 -- Name: index_parcel_item_storings_on_created_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_parcel_item_storings_on_created_at ON parcel_item_storings USING btree (created_at);
+
+
+--
+-- Name: index_parcel_item_storings_on_creator_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_parcel_item_storings_on_creator_id ON parcel_item_storings USING btree (creator_id);
+
+
+--
+-- Name: index_parcel_item_storings_on_parcel_item_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_parcel_item_storings_on_parcel_item_id ON parcel_item_storings USING btree (parcel_item_id);
+
+
+--
+-- Name: index_parcel_item_storings_on_product_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_parcel_item_storings_on_product_id ON parcel_item_storings USING btree (product_id);
+
+
+--
+-- Name: index_parcel_item_storings_on_storage_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_parcel_item_storings_on_storage_id ON parcel_item_storings USING btree (storage_id);
+
+
+--
+-- Name: index_parcel_item_storings_on_updated_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_parcel_item_storings_on_updated_at ON parcel_item_storings USING btree (updated_at);
+
+
+--
+-- Name: index_parcel_item_storings_on_updater_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_parcel_item_storings_on_updater_id ON parcel_item_storings USING btree (updater_id);
+
+
+--
+-- Name: index_parcel_items_on_analysis_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_parcel_item_storings_on_created_at ON parcel_item_storings USING btree (created_at);
@@ -17541,6 +17794,14 @@ CREATE TRIGGER synchronize_jeis_of_entry AFTER INSERT OR UPDATE ON journal_entri
 
 
 --
+-- Name: activity_production_batches fk_rails_00e34d02e0; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY activity_production_batches
+    ADD CONSTRAINT fk_rails_00e34d02e0 FOREIGN KEY (activity_production_id) REFERENCES activity_productions(id);
+
+
+--
 -- Name: payslips fk_rails_02f6ec2213; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -18464,3 +18725,8 @@ INSERT INTO schema_migrations (version) VALUES ('20180321092840');
 
 INSERT INTO schema_migrations (version) VALUES ('20180406083922');
 
+INSERT INTO schema_migrations (version) VALUES ('20180416122731');
+
+INSERT INTO schema_migrations (version) VALUES ('20180419140723');
+
+INSERT INTO schema_migrations (version) VALUES ('20180503081248');
