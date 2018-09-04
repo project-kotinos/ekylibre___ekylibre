@@ -254,7 +254,7 @@ CREATE TABLE accounts (
     custom_fields jsonb,
     auxiliary_number character varying,
     nature character varying,
-    centralizing_account_id integer
+    centralizing_account_name character varying
 );
 
 

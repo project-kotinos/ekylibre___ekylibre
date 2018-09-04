@@ -167,11 +167,15 @@ class ProductNatureCategory < Ekylibre::Record::Base
          charge product stock stock_movement].each do |account|
         account_name = item.send("#{account}_account")
         if account_name.present?
+          puts "ACCOUNT NAME:"
+          p account_name
           attributes["#{account}_account"] = Account.find_or_import_from_nomenclature(account_name)
         end
       end
       # TODO: add in rake clean method a way to detect same translation in nomenclatures by locale (to avoid conflict with validation on uniq name for example)
       # puts "#{item.human_name} - #{item.name}".red
+      puts "ATTRIBUTES:"
+      p attributes
       create!(attributes)
     end
 

@@ -186,6 +186,8 @@ class Account < Ekylibre::Record::Base
       self.auxiliary_number = nil
       self.centralizing_account = nil
       self.number = number.ljust(8, '0') if number
+      puts "NUMBER:"
+      p self.number
     elsif auxiliary? && centralizing_account
       centralizing_account_number = self.centralizing_account.send(Account.accounting_system)
       self.number = centralizing_account_number + auxiliary_number
@@ -334,8 +336,16 @@ class Account < Ekylibre::Record::Base
       raise ArgumentError, "The usage #{usage.inspect} is unknown" unless item
       raise ArgumentError, "The usage #{usage.inspect} is not implemented in #{accounting_system.inspect}" unless item.send(accounting_system)
       account = find_by_usage(usage, except: { nature: :auxiliary })
+      puts "ACCOUNT FOUND IN NOMENCLATURE:"
+      p account
       unless account
-        return unless valid_item?(item)
+        puts "ACCOUNTING SYSTEM:"
+        p accounting_system
+        puts "VALID ITEM:"
+        p valid_item?(item)
+        puts "NUMBER ABOUT TO BE CREATED:"
+        p item.send(accounting_system)
+        return unless valid_item?(item) && item.send(accounting_system).match(/\A[1-9]0*\z|\A0/).nil?
         account = new(
           name: item.human_name,
           number: item.send(accounting_system),
@@ -343,6 +353,8 @@ class Account < Ekylibre::Record::Base
           usages: item.name,
           nature: 'general'
         )
+        puts "ACCOUNT ABOUT TO BE CREATED:"
+        p account
         account.save!
       end
       account
