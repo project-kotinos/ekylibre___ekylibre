@@ -3001,7 +3001,7 @@
       <item name="electronic_equipment" fixed_asset_account="office_equipment_assets" fixed_asset_allocation_account="office_equipment_asset_depreciations" fixed_asset_expenses_account="equipment_depreciations_inputations_expenses" depreciation_percentage="33.0" charge_account="materials_expenses" product_account="merchandising_revenues" stock_account="other_materials_stock" purchasable="true" saleable="true" depreciable="true" storable="true" pictogram="laptop" stock_movement_account="other_supply_stocks_variation"/>
       <item name="equipment" fixed_asset_account="equipment_assets" fixed_asset_allocation_account="equipment_asset_depreciations" fixed_asset_expenses_account="equipment_depreciations_inputations_expenses" depreciation_percentage="15.0" charge_account="equipment_maintenance_expenses" product_account="sales_assets_revenues" purchasable="true" saleable="true" depreciable="true" pictogram="tractor"/>
       <item name="equipment_fleet" pictogram="tractor"/>
-      <item name="equipment_rent" charge_account="equipment_rent_expenses" product_account="revenues" purchasable="true" saleable="true" pictogram="tractor"/>
+      <item name="equipment_rent" charge_account="equipment_rent_expenses" product_account="services_revenues" purchasable="true" saleable="true" pictogram="tractor"/>
       <item name="equipment_repair_services" charge_account="equipment_maintenance_expenses" purchasable="true" pictogram="wrench"/>
       <item name="exploitation_subsidies" product_account="exploitation_subsidies" saleable="true" pictogram="legal"/>
       <item name="farm_teaching_services" charge_account="making_services_expenses" product_account="making_services_revenues" purchasable="true" saleable="true" pictogram="barn"/>
@@ -3055,7 +3055,7 @@
       <item name="professional_subscription" charge_account="professional_subscriptions_expenses" purchasable="true" pictogram="cc"/>
       <item name="rabbit_band" charge_account="young_animal_expenses" product_account="young_animal_revenues" stock_account="short_time_animal_stock" purchasable="true" saleable="true" storable="true" pictogram="cow" stock_movement_account="short_cycle_animals_inventory_variations"/>
       <item name="raw_materials" charge_account="materials_expenses" stock_account="other_consumables_stock" purchasable="true" storable="true" pictogram="matter" stock_movement_account="other_supply_stocks_variation"/>
-      <item name="rent" charge_account="rent_expenses" product_account="revenues" purchasable="true" saleable="true" pictogram="money"/>
+      <item name="rent" charge_account="rent_expenses" product_account="services_revenues" purchasable="true" saleable="true" pictogram="money"/>
       <item name="rent_hosting_service" charge_account="rent_expenses" purchasable="true" pictogram="subscription"/>
       <item name="representation" charge_account="advertising_expenses" purchasable="true" pictogram="cc"/>
       <item name="running_water" charge_account="water_expenses" purchasable="true" pictogram="drop"/>
