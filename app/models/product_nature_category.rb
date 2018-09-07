@@ -167,6 +167,8 @@ class ProductNatureCategory < Ekylibre::Record::Base
          charge product stock stock_movement].each do |account|
         account_name = item.send("#{account}_account")
         if account_name.present?
+          puts "REFERENCE NAME:"
+          p reference_name
           puts "ACCOUNT NAME:"
           p account_name
           attributes["#{account}_account"] = Account.find_or_import_from_nomenclature(account_name)
