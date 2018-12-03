@@ -197,6 +197,8 @@ gem 'luhn'
 # For interval selector
 gem 'bootstrap-slider-rails'
 
+gem 'webpacker', '~> 3.5'
+
 group :development do
   gem 'bullet', '< 5.6.0'
 

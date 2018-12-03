@@ -86,4 +86,8 @@ Procfile.*
 *.sw?
 
 .byebug_history
-.gitconfig
+.gitconfig/public/packs
+/public/packs-test
+/node_modules
+yarn-debug.log*
+.yarn-integrity
