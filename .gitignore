@@ -48,6 +48,7 @@ private/*
 
 # Ignore compiled assets
 /public/assets
+/public/packs
 /public/system/*
 
 # Ignore plugins

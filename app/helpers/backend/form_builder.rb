@@ -155,11 +155,10 @@ module Backend
     # Updates default input method
     def input(attribute_name, options = {}, &block)
       options[:input_html] ||= {}
-      if options[:show]
-        options[:input_html]['data-show'] = clean_targets(options.delete(:show))
-      end
-      if options[:hide]
-        options[:input_html]['data-hide'] = clean_targets(options.delete(:hide))
+      %i[show hide target action].each do |key|
+        if options[key]
+          options[:input_html]["data-#{key}"] = clean_targets(options.delete(key))
+        end
       end
       unless options.key?(:disabled)
         if @object.is_a?(ActiveRecord::Base) && !@object.new_record? &&
