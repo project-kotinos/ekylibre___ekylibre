@@ -91,6 +91,7 @@ Rails.application.routes.draw do
       resources :contacts, only: [:index] do
         match 'picture(/:style)', via: :get, action: :picture, as: :picture
       end
+      resources :building_divisions, only: %i[index]
       resources :crumbs, only: %i[index create]
       resources :interventions, only: %i[index create]
       resources :intervention_participations, only: [:create]
@@ -99,6 +100,10 @@ Rails.application.routes.draw do
       resources :plant_density_abaci, only: %i[index show]
       resources :plant_countings, only: %i[create]
       resources :plants, only: %i[index]
+      resources :products, only: %i[index]
+      resources :types, only: %i[index], controller: :product_natures
+      resources :variants, only: %i[index], controller: :product_nature_variants
+      resources :categories, only: %i[index], controller: :product_nature_catefgories
     end
   end
 
