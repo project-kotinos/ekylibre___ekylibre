@@ -1,3 +1,3 @@
-json.array! @zones do |zone|
-  json.call(zone, :id, :name, :shape)
+json.array! @building_divisions do |division|
+  json.call(division, :id, :name, :shape)
 end
