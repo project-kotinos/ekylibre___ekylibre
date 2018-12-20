@@ -103,7 +103,7 @@ Rails.application.routes.draw do
       resources :products, only: %i[index]
       resources :types, only: %i[index], controller: :product_natures
       resources :variants, only: %i[index], controller: :product_nature_variants
-      resources :categories, only: %i[index], controller: :product_nature_catefgories
+      resources :categories, only: %i[index], controller: :product_nature_categories
     end
   end
 
