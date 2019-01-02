@@ -1,13 +1,19 @@
-postgis:
-  image: mdillon/postgis
-  volumes:
-    - /tmp/data/ekylibre/postgresql:/var/lib/postgresql/data
-  ports:
-    - "5432:5432"
+version: '3'
 
-redis:
-  image: redis:3.0
-  volumes:
-    - /tmp/data/ekylibre/redis:/data
-  ports:
-    - "6379:6379"
+services:
+  postgres:
+    image: mdillon/postgis:9.6-alpine
+    environment:
+      - POSTGRES_PASSWORD="ChangeMe!"
+    ports:
+      - "5432"
+
+  ruby:
+    image: ekylibre/ekylibre:local-dev
+    build: .
+    ports:
+      - "3000"
+      - "8080"
+    environment:
+      - BLAH=blah
+    command: /snore
