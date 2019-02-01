@@ -1,22 +1,34 @@
-FROM ubuntu:18.04
+# IMAGE: ekylibre/ekylibre-dev
+FROM ekylibre/ruby-base:2.3.8
+ENV U_UID=1000 U_GID=1000 U_NAME=ekylibre U_GNAME=ekylibre
 
-ADD docker/tools/snore /snore
+SHELL ["/bin/bash", "-lc"]
 
-RUN apt-get -y update && apt-get -y upgrade && \
-    apt-get install -y git curl build-essential libreadline-dev libssl1.0-dev zlib1g-dev \
-        graphicsmagick \
-        libproj-dev libgeos-dev libgeos++-dev `#rgeo` \
-        openjdk-8-jdk  `#rjb` \
-        libqtwebkit-dev `#capybara` \
-        libicu-dev `#charlock_holmes` \
-        libpq-dev `#pq` \
-        libreoffice && \
-    git clone https://github.com/rbenv/rbenv.git ~/.rbenv &&\
-    echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc && \
-    mkdir -p "$(rbenv root)"/plugins && \
-    git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build && \
-    echo 'eval "$(rbenv init -)"' >> ~/.bashrc && \
-    echo 'export JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64"' >> ~/.bashrc && \
-    source ~/.bashrc && \
-    rbenv install 2.3.8 && rbenv global 2.3.8 && gem install bundler
+RUN apt-get update && \
+    apt-get -y install \
+        libqtwebkit-dev `#capybara`
 
+RUN groupadd -g $U_GID $U_GNAME && \
+    useradd -g $U_GID -u $U_UID -m -s /bin/bash $U_NAME && \
+    mkdir /ekylibre && \
+    chown -R $U_UID:$U_GID /rbenv /ekylibre
+
+ADD docker/tools/snore /bin/snore
+
+USER $U_NAME
+WORKDIR /ekylibre
+ADD Gemfile Gemfile.lock ./
+RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash && \
+    . "$HOME/.nvm/nvm.sh" && \
+    nvm install --lts=dubnium && \
+    npm i -g yarn && \
+    bundle install
+
+VOLUME /rbenv/versions/$RUBY_VERSION/lib/ruby/gems
+VOLUME /ekylibre
+EXPOSE 3000
+USER root
+RUN echo "Europe/Paris" > /etc/timezone
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata
+
+USER $U_NAME
