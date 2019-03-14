@@ -1,6 +1,9 @@
 class SetMissingValidatedAtAndContinuousNumbersOnJournalEntries < ActiveRecord::Migration
   def up
     execute <<-SQL
+      ALTER TABLE journal_entries
+        DISABLE TRIGGER compute_journal_entries_continuous_number_on_update;
+
       UPDATE journal_entries
          SET validated_at = COALESCE(grouped_jeis.updated_at,
                                      NOW())
@@ -14,11 +17,6 @@ class SetMissingValidatedAtAndContinuousNumbersOnJournalEntries < ActiveRecord::
          AND validated_at IS NULL
          AND (state = 'confirmed'
           OR state = 'closed')
-    SQL
-
-    execute <<-SQL
-      ALTER TABLE journal_entries
-        DISABLE TRIGGER compute_journal_entries_continuous_number_on_update;
 
       UPDATE journal_entries
          SET continuous_number = numbered_entries.number
