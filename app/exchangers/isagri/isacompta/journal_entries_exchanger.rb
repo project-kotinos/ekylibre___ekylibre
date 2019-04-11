@@ -28,28 +28,17 @@ module Isagri
         rows = CSV.read(file, headers: true, col_sep: ';', encoding: detection[:encoding])
         w.count = rows.size
 
-        currency_preference = Preference[:currency]
-
         Preference.set!(:currency, :EUR) unless Preference.find_by(name: :currency)
-
-        # status to map
-        quantity_unit_transcode = {
-          'kg' => :kilogram,
-          'L' => :liter,
-          'M3' => :cubic_meter,
-          'T' => :ton,
-          'U' => :unity
-        }
 
         entries = {}
 
         w.reset!(rows.count, :yellow)
 
-        rows.each_with_index do |row, index|
+        rows.each do |row|
 
 
           r = {
-            account_number: row[0].blank? ? nil : row[0].to_s,
+            account_number: row[0].blank? ? nil : row[0].to_s.strip,
             account_name: row[1].blank? ? nil : row[1].to_s,
             journal_code: row[2].blank? ? nil : row[2].to_s.strip,
             entry_number: row[3].blank? ? nil : row[3].to_s.strip,
