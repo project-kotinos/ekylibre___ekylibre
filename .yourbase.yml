@@ -1,0 +1,16 @@
+dependencies:
+  build:
+    - ruby:2.3.4
+
+build_targets:
+  - name: default
+    commands:
+        - chmod +x yourbased.sh
+        - ./yourbased.sh
+    
+      
+     
+ci:
+  builds:
+    - name: default
+      build_target: default
