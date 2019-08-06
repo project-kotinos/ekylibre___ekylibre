@@ -4,6 +4,8 @@ dependencies:
 
 build_targets:
   - name: default
+    container: 
+      image: yourbase/yb_ubuntu:16.04
     commands:
         - chmod +x yourbased.sh
         - ./yourbased.sh
