@@ -11,8 +11,8 @@ echo "Install packages:"
 # /etc/init.d/postgresql stop
 
 # Install needed packages including PostgreSQL
-echo "Removing old Postgres versions."
-apt-get remove postgresql-client-9.1 postgresql-client-9.2 postgresql-client-9.3 postgresql-client-9.4 postgresql-client-9.5
+# echo "Removing old Postgres versions."
+# apt-get remove postgresql-client-9.1 postgresql-client-9.2 postgresql-client-9.3 postgresql-client-9.4 postgresql-client-9.5
 echo""
 echo "Dependencies install..."
 echo""
