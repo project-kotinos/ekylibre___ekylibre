@@ -22,7 +22,7 @@ build_targets:
           port_check:
             port: 6379
             timeout: 20
-        db:
+        postgres:
           image: postgres:9.4
           environment:
             - POSTGRES_PASSWORD=root
