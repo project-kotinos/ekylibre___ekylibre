@@ -22,7 +22,7 @@ echo ""
 echo "Dependencies installed!"
 echo ""
 
-which qt5-qmake
+sudo ln -s /usr/bin/qmake-qt5 /usr/bin/qmake
 qmake
 gem install capybara-webkit -v '1.15.0'
 
