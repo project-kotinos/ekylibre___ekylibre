@@ -16,18 +16,18 @@ echo "Install packages:"
 echo""
 echo "Dependencies install..."
 echo""
-apt-get install -f -q postgresql-9.6-postgis-2.3 graphicsmagick tesseract-ocr tesseract-ocr-fra tesseract-ocr-eng tesseract-ocr-spa pdftk libreoffice poppler-utils poppler-data qt5-default libqt5webkit5-dev gstreamer1.0-x gstreamer1.0-tools gstreamer1.0-plugins-base libgeos-dev libproj-dev || true
+apt-get install -f -q graphicsmagick tesseract-ocr tesseract-ocr-fra tesseract-ocr-eng tesseract-ocr-spa pdftk libreoffice poppler-utils poppler-data qt5-default libqt5webkit5-dev gstreamer1.0-x gstreamer1.0-tools gstreamer1.0-plugins-base libgeos-dev libproj-dev || true
 gem uninstall bundler -a -x && gem install bundler -v 1.14.6
 echo ""
 echo "Dependencies installed!"
 echo ""
 
-# Configure PostgreSQL port to 5432
-sed -i -r 's/port\s*=\s*[0-9]+/port = 5432/g' /etc/postgresql/9.6/main/postgresql.conf
+# # Configure PostgreSQL port to 5432
+# sed -i -r 's/port\s*=\s*[0-9]+/port = 5432/g' /etc/postgresql/9.6/main/postgresql.conf
 
-# Grant access to all
-sed -i '1i local all all trust' /etc/postgresql/9.6/main/pg_hba.conf
+# # Grant access to all
+# sed -i '1i local all all trust' /etc/postgresql/9.6/main/pg_hba.conf
 
-# Force PostgreSQL restart
-/etc/init.d/postgresql stop
-/etc/init.d/postgresql start 9.6
+# # Force PostgreSQL restart
+# /etc/init.d/postgresql stop
+# /etc/init.d/postgresql start 9.6
