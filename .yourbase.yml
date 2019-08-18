@@ -11,10 +11,10 @@ build_targets:
         - chmod +x yourbased.sh
         - ./yourbased.sh
     environment:
-      - PGUSER=ci
-      - PGPASSWORD=ci
+      - PGUSER=root
+      - PGPASSWORD=root
       - PGHOST={{ .Containers.IP "postgres" }}
-      - DATABASE_URL=postgres://ci:ci@{{ .Containers.IP "postgres" }}:5432/travis_ci_test
+      - DATABASE_URL=postgres://root:root@{{ .Containers.IP "postgres" }}:5432/travis_ci_test
     dependencies:
       containers:
         redis:
