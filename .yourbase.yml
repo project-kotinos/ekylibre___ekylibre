@@ -10,6 +10,27 @@ build_targets:
     commands:
         - chmod +x yourbased.sh
         - ./yourbased.sh
+    environment:
+      - PGUSER=ci
+      - PGPASSWORD=ci
+      - PGHOST={{ .Containers.IP "postgres" }}
+      - DATABASE_URL=postgres://ci:ci@{{ .Containers.IP "postgres" }}:5432/travis_ci_test
+    dependencies:
+      containers:
+        redis:
+          image: redis:latest
+          port_check:
+            port: 6379
+            timeout: 20
+        db:
+          image: postgres:9.4
+          environment:
+            - POSTGRES_PASSWORD=root
+            - POSTGRES_USER=root
+            - POSTGRES_DB=travis_ci_test
+          port_check:
+            port: 5432
+            timeout: 45
     
       
      
