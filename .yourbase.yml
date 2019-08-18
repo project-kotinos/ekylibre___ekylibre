@@ -1,6 +1,7 @@
 dependencies:
   build:
     - ruby:2.3.4
+    - java:8.202.08
 
 build_targets:
   - name: default
