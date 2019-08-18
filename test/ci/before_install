@@ -16,13 +16,13 @@ echo "Install packages:"
 echo""
 echo "Dependencies install..."
 echo""
-apt-get install -f -q qt5-qmake graphicsmagick tesseract-ocr tesseract-ocr-fra tesseract-ocr-eng tesseract-ocr-spa pdftk libreoffice poppler-utils poppler-data qt5-default libqt5webkit5-dev gstreamer1.0-x gstreamer1.0-tools gstreamer1.0-plugins-base libgeos-dev libproj-dev || true
+apt-get install -f -q qt5-qmake qt5-qmake-bin graphicsmagick tesseract-ocr tesseract-ocr-fra tesseract-ocr-eng tesseract-ocr-spa pdftk libreoffice poppler-utils poppler-data qt5-default libqt5webkit5-dev gstreamer1.0-x gstreamer1.0-tools gstreamer1.0-plugins-base libgeos-dev libproj-dev || true
 gem uninstall bundler -a -x && gem install bundler -v 1.14.6
 echo ""
 echo "Dependencies installed!"
 echo ""
 
-update-alternatives --config qmake
+qmake
 gem install capybara-webkit -v '1.15.0'
 
 # # Configure PostgreSQL port to 5432
