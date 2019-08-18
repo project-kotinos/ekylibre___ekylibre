@@ -22,6 +22,7 @@ default: &default
   # http://guides.rubyonrails.org/configuring.html#database-pooling
   pool: 5
   postgis_extension: []
+  url: <%= ENV['DATABASE_URL'] %>
 
   # Schema search path. The server defaults to $user,public
   schema_search_path: public,postgis
