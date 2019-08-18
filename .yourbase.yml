@@ -1,6 +1,6 @@
 dependencies:
   build:
-    - ruby:2.4.0
+    - ruby:2.6.0
     - java:8.202.08
 
 build_targets:
