@@ -22,6 +22,8 @@ echo ""
 echo "Dependencies installed!"
 echo ""
 
+gem install capybara-webkit -v '1.15.0'
+
 # # Configure PostgreSQL port to 5432
 # sed -i -r 's/port\s*=\s*[0-9]+/port = 5432/g' /etc/postgresql/9.6/main/postgresql.conf
 
