@@ -1,11 +1,10 @@
 #!/bin/bash
 set -ex
-
-psql -c 'CREATE DATABASE ekylibre_test;'
-psql -d ekylibre_test -c 'CREATE SCHEMA IF NOT EXISTS postgis;'
-psql -d ekylibre_test -c 'CREATE EXTENSION IF NOT EXISTS postgis SCHEMA postgis;'
-psql -d ekylibre_test -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp" SCHEMA postgis;'
-psql -d ekylibre_test -c 'CREATE EXTENSION IF NOT EXISTS "unaccent" SCHEMA postgis;'
+psql -U postgres -c 'CREATE DATABASE ekylibre_test;'
+psql -U postgres -d ekylibre_test -c 'CREATE SCHEMA IF NOT EXISTS postgis;'
+psql -U postgres -d ekylibre_test -c 'CREATE EXTENSION IF NOT EXISTS postgis SCHEMA postgis;'
+psql -U postgres -d ekylibre_test -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp" SCHEMA postgis;'
+psql -U postgres -d ekylibre_test -c 'CREATE EXTENSION IF NOT EXISTS "unaccent" SCHEMA postgis;'
 
 cp -f test/ci/database.yml config/database.yml
 
