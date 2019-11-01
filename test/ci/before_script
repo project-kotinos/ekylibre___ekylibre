@@ -1,4 +1,6 @@
 #!/bin/bash
+set -ex
+
 psql -c 'CREATE DATABASE ekylibre_test;'
 psql -d ekylibre_test -c 'CREATE SCHEMA IF NOT EXISTS postgis;'
 psql -d ekylibre_test -c 'CREATE EXTENSION IF NOT EXISTS postgis SCHEMA postgis;'
