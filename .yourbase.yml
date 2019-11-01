@@ -14,7 +14,7 @@ build_targets:
       - PGUSER=root
       - PGPASSWORD=root
       - PGHOST={{ .Containers.IP "postgres" }}
-      - DATABASE_URL=postgres://root:root@{{ .Containers.IP "postgres" }}:5432/travis_ci_test
+      - DATABASE_URL=postgres://root:root@{{ .Containers.IP "postgres" }}:5432/ekylibre_test
     dependencies:
       containers:
         redis:
@@ -27,7 +27,7 @@ build_targets:
           environment:
             - POSTGRES_PASSWORD=root
             - POSTGRES_USER=root
-            - POSTGRES_DB=travis_ci_test
+            - POSTGRES_DB=ekylibre_test
           port_check:
             port: 5432
             timeout: 45
